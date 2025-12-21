@@ -1,0 +1,11 @@
+asgiref==3.11.0
+Django==3.2.16
+dotenv==0.9.9
+iniconfig==2.3.0
+packaging==25.0
+pluggy==1.6.0
+Pygments==2.19.2
+pytest==9.0.2
+python-dotenv==1.2.1
+pytz==2025.2
+sqlparse==0.5.5

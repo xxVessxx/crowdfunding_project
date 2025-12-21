@@ -49,3 +49,37 @@ class Collect(models.Model):
         auto_now_add=True,
         verbose_name='Дата окончания сбора',
     )
+
+
+class Payment(models.Model):
+    """Модель платежа."""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
+    collect = models.ForeignKey(
+        Collect,
+        on_delete=models.CASCADE,
+        related_name='payments',
+    )
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+    )
+    date = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.collect.collected_amount += self.amount
+        self.collect.donors_count += 1
+        self.collect.save()
+
+
+class DonationRecord(models.Model):
+    """Модель ленты сбора."""
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    collect = models.ForeignKey(Collect, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    date = models.DateTimeField(auto_now_add=True)
