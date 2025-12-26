@@ -41,14 +41,15 @@ class Collect(models.Model):
         default=0,
         verbose_name='Собранная сумма',
     )
+    donors_count = models.PositiveIntegerField(
+        default=0,
+        verbose_name='Количество доноров',
+    )
     image = models.ImageField(
         upload_to='collects/images/',
         verbose_name='Изображение',
     )
-    end_date = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='Дата окончания сбора',
-    )
+    end_date = models.DateTimeField(verbose_name='Дата окончания сбора',)
 
 
 class Payment(models.Model):
@@ -69,11 +70,15 @@ class Payment(models.Model):
     )
     date = models.DateTimeField(auto_now_add=True)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.collect.collected_amount += self.amount
-        self.collect.donors_count += 1
-        self.collect.save()
+    class Meta:
+        verbose_name = 'Платёж'
+        verbose_name_plural = 'Платежи'
+
+    def __str__(self):
+        return (
+            f'Платёж от {self.user.get_full_name_custom()}'
+            f'в размере {self.amount} по сбору {self.collect.name}'
+        )
 
 
 class DonationRecord(models.Model):
